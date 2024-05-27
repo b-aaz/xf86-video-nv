@@ -1219,10 +1219,6 @@ NVCloseScreen(ScreenPtr pScreen)
 
     NVUnmapMem(pScrn);
     vgaHWUnmapMem(pScrn);
-#ifdef HAVE_XAA_H
-    if (pNv->AccelInfoRec)
-        XAADestroyInfoRec(pNv->AccelInfoRec);
-#endif
     if (pNv->CursorInfoRec)
         xf86DestroyCursorInfoRec(pNv->CursorInfoRec);
     if (pNv->ShadowPtr)
@@ -2078,9 +2074,6 @@ NVPreInit(ScrnInfoPtr pScrn, int flags)
 
     /* Load XAA if needed */
     if (!pNv->NoAccel) {
-#ifdef HAVE_XAA_H
-	if (!xf86LoadSubModule(pScrn, "xaa"))
-#endif
 	{
 	    xf86DrvMsg(pScrn->scrnIndex, X_INFO, "Falling back to shadowfb\n");
 	    pNv->NoAccel = 1;
@@ -2617,10 +2610,7 @@ NVScreenInit(ScreenPtr pScreen, int argc, char **argv)
     AvailFBArea.x2 = pScrn->displayWidth;
     AvailFBArea.y2 = offscreenHeight;
     xf86InitFBManager(pScreen, &AvailFBArea);
-    
-    if (!pNv->NoAccel)
-	NVAccelInit(pScreen);
-    
+
     xf86SetBackingStore(pScreen);
     xf86SetSilkenMouse(pScreen);
 
